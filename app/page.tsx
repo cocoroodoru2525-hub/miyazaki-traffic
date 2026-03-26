@@ -60,7 +60,7 @@ const SAMPLE_REPORTS = [
   { id: 5, spotId: "s06", name: "宮崎南バイパス",         level: 1, postedAt: n - 8*3600000,    votes: 1 },
 ];
 
-function timeAgo(postedAt) {
+function timeAgo(postedAt: number) {
   const mins = Math.round((Date.now() - postedAt) / 60000);
   if (mins < 1)  return "たった今";
   if (mins < 60) return `${mins}分前`;
