@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export const metadata = {
   title: "のりあい｜宮崎渋滞情報",
   description: "宮崎のみんなで作るリアルタイム渋滞マップ。渋滞してるよ！をみんなに伝えよう。無料・市民参加型。",
@@ -25,7 +27,7 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ja">
       <body style={{ margin: 0 }}>{children}</body>
