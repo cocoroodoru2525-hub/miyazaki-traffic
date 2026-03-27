@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -47,15 +46,22 @@ const SPOTS = [
   // 清武方面
   { id: "s37", name: "ベアーズモール清武方面", area: "南部",     lat: 31.861801, lng: 131.387277 },
   { id: "s38", name: "宮崎医大方面",         area: "南部",       lat: 31.840300, lng: 131.398410 },
-  // その他
-  { id: "s19", name: "その他",               area: "その他",     lat: 31.9400,   lng: 131.4800   },
+  // 運動公園（イベント時混雑）
+  { id: "p01", name: "生目の杜運動公園",       area: "運動公園",   lat: 31.944441, lng: 131.374405 },
+  { id: "p02", name: "県総合運動公園（木花）",   area: "運動公園",   lat: 31.820884, lng: 131.448895 },
+  { id: "p03", name: "清武運動公園",            area: "運動公園",   lat: 31.847481, lng: 131.371148 },
+  // 観光・施設
+  { id: "f01", name: "フェニックス自然動物園",   area: "観光・施設", lat: 31.983051, lng: 131.476100 },
+  { id: "f02", name: "シーガイア",              area: "観光・施設", lat: 31.959121, lng: 131.469066 },
+  { id: "f03", name: "宮崎空港",                area: "観光・施設", lat: 31.876206, lng: 131.448398 },
 ];
 
 const AREA_COLORS = {
   "中心部":    "#1d6fb8",
   "南部":      "#d97706",
   "北部・住吉":"#2563eb",
-  "郊外":      "#6b7280",
+  "運動公園":  "#7c3aed",
+  "観光・施設":"#059669",
   "その他":    "#9ca3af",
 };
 
@@ -268,19 +274,27 @@ export default function App() {
       </div>
       <div style={{ flex:1, position:"relative" }}>
         <LeafletMap reports={reports} onSelectSpot={setSpot} />
-        {/* その他ボタン（海側・右端に固定） */}
+        {/* その他：検索窓（海側・右端に固定） */}
         <div style={{ position:"absolute", right:10, top:"50%", transform:"translateY(-50%)", zIndex:1000 }}>
-          <button
-            onClick={() => setSpot(SPOTS.find(s => s.id === "s19"))}
+          <div
+            onClick={() => {
+              const name = prompt("場所名を入力してください\n例：山形屋前、宮崎神宮付近");
+              if (name && name.trim()) {
+                setSpot({ id:"s19", name: name.trim(), area:"その他", lat:31.91, lng:131.42 });
+                setOtherMemo(name.trim());
+              }
+            }}
             style={{
-              background:"#1d6fb8", color:"#fff", border:"none", borderRadius:12,
+              background:"#1d6fb8", color:"#fff", borderRadius:12,
               padding:"12px 8px", fontSize:13, fontWeight:900, cursor:"pointer",
-              fontFamily:"inherit", writingMode:"vertical-rl",
-              boxShadow:"0 3px 12px rgba(29,111,184,0.45)", lineHeight:1.4,
+              writingMode:"vertical-rl", lineHeight:1.4,
+              boxShadow:"0 3px 12px rgba(29,111,184,0.45)",
+              display:"flex", alignItems:"center", gap:4,
             }}
           >
-            その他
-          </button>
+            <span>🔍</span>
+            <span>その他</span>
+          </div>
         </div>
       </div>
       <div style={{ background:"#fff", borderTop:"2px solid #e5e7eb", padding:"16px 18px", flexShrink:0, zIndex:1000 }}>
