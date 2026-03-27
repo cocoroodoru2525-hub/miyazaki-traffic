@@ -1,6 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 const SPOTS = [
   // 中心部
@@ -80,14 +86,7 @@ const FILTER_OPTIONS = [
   { value: 9999, label: "すべて" },
 ];
 
-const n = Date.now();
-const SAMPLE_REPORTS = [
-  { id: 1, spotId: "s01", name: "青葉町",       level: 3, postedAt: n - 6*60000,     votes: 9 },
-  { id: 2, spotId: "s07", name: "イオン宮崎方面", level: 2, postedAt: n - 20*60000,   votes: 5 },
-  { id: 3, spotId: "s11", name: "日向住吉駅",   level: 2, postedAt: n - 95*60000,    votes: 3 },
-  { id: 4, spotId: "s12", name: "宮崎北バイパス方面", level: 1, postedAt: n - 4.5*3600000, votes: 2 },
-  { id: 5, spotId: "s06", name: "宮崎南バイパス", level: 1, postedAt: n - 8*3600000,  votes: 1 },
-];
+const SAMPLE_REPORTS = [];
 
 function timeAgo(postedAt) {
   const mins = Math.round((Date.now() - postedAt) / 60000);
@@ -168,27 +167,68 @@ export default function App() {
   const [screen,    setScreen]    = useState("home");
   const [spot,      setSpot]      = useState(null);
   const [level,     setLevel]     = useState(null);
-  const [otherMemo, setOtherMemo] = useState(""); // 「その他」のメモ
-  const [reports,   setReports]   = useState(SAMPLE_REPORTS);
+  const [otherMemo, setOtherMemo] = useState("");
+  const [reports,   setReports]   = useState([]);
   const [voted,     setVoted]     = useState([]);
   const [filter,    setFilter]    = useState(3);
   const [adminPass, setAdminPass] = useState("");
   const [adminOk,   setAdminOk]   = useState(false);
+  const [loading,   setLoading]   = useState(true);
+
+  // Supabaseからデータ取得
+  useEffect(() => {
+    fetchReports();
+    // リアルタイム更新
+    const channel = supabase
+      .channel("reports")
+      .on("postgres_changes", { event: "*", schema: "public", table: "reports" }, () => {
+        fetchReports();
+      })
+      .subscribe();
+    return () => supabase.removeChannel(channel);
+  }, []);
+
+  async function fetchReports() {
+    setLoading(true);
+    const { data } = await supabase
+      .from("reports")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (data) {
+      setReports(data.map(r => ({
+        id: r.id,
+        spotId: r.spot_id,
+        name: r.spot_name,
+        level: r.level,
+        memo: r.memo || "",
+        votes: r.votes || 0,
+        postedAt: new Date(r.created_at).getTime(),
+      })));
+    }
+    setLoading(false);
+  }
 
   function startReport() { setSpot(null); setLevel(null); setOtherMemo(""); setScreen("map"); }
-  function submit() {
-    setReports(p => [{
-      id: Date.now(), spotId: spot.id, name: spot.name, level,
-      memo: spot.id === "s19" ? otherMemo : "",
-      postedAt: Date.now(), votes: 0
-    }, ...p]);
+
+  async function submit() {
+    await supabase.from("reports").insert({
+      spot_id:   spot.id,
+      spot_name: spot.name,
+      level:     level,
+      memo:      spot.id === "s19" ? otherMemo : "",
+      votes:     0,
+    });
     setScreen("done");
   }
-  function vote(id) {
+
+  async function vote(id) {
     if (voted.includes(id)) return;
     setVoted(p => [...p, id]);
-    setReports(p => p.map(r => r.id === id ? { ...r, votes: r.votes+1 } : r));
+    const report = reports.find(r => r.id === id);
+    await supabase.from("reports").update({ votes: (report.votes || 0) + 1 }).eq("id", id);
+    setReports(p => p.map(r => r.id === id ? { ...r, votes: r.votes + 1 } : r));
   }
+
   function addSpot(name, area, lat, lng) {
     const newId = "u" + Date.now();
     SPOTS.push({ id: newId, name, area, lat: parseFloat(lat), lng: parseFloat(lng) });
