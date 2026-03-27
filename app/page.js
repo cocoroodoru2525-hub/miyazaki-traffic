@@ -301,6 +301,12 @@ export default function App() {
         <button onClick={() => setScreen("admin")} style={{ marginTop:24, background:"none", border:"1px solid #e5e7eb", borderRadius:10, padding:"6px 16px", fontSize:12, color:"#9ca3af", cursor:"pointer", fontFamily:"inherit" }}>
           🔧 管理画面
         </button>
+        {/* プライバシーポリシー */}
+        <div style={{ marginTop: 16 }}>
+          <a href="/privacy" style={{ fontSize: 12, color: "#9ca3af", textDecoration: "underline" }}>
+            プライバシーポリシー
+          </a>
+        </div>
       </div>
     </Shell>
   );
