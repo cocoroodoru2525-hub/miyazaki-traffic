@@ -1,31 +1,54 @@
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
 
 const SPOTS = [
-  // 中心部：Googleマップ実座標
-  { id: "s01", name: "青葉町交差点",          area: "中心部",     lat: 31.9199, lng: 131.4359 },
-  { id: "s02", name: "橘通り",                area: "中心部",     lat: 31.9166, lng: 131.4233 },
-  { id: "s03", name: "高千穂通り",            area: "中心部",     lat: 31.9162, lng: 131.4271 },
-  { id: "s04", name: "宮崎駅前",              area: "中心部",     lat: 31.9157, lng: 131.4320 },
-  { id: "s05", name: "橘橋付近",              area: "中心部",     lat: 31.9059, lng: 131.4205 },
-  { id: "s07", name: "イオン宮崎・宮交シティ", area: "中心部",     lat: 31.9231, lng: 131.4552 },
-  { id: "s20", name: "源藤交差点",            area: "中心部",     lat: 31.8874, lng: 131.4121 },
-  // 南部
-  { id: "s06", name: "宮崎南バイパス",        area: "南部",       lat: 31.8811, lng: 131.4098 },
-  { id: "s09", name: "加納交差点",            area: "南部",       lat: 31.8763, lng: 131.3943 },
-  { id: "s10", name: "清武方面（国道269号）",  area: "南部",       lat: 31.8699, lng: 131.4167 },
+  // 中心部
+  { id: "s01", name: "青葉町",               area: "中心部",     lat: 31.920290, lng: 131.435871 },
+  { id: "s02", name: "橘通り",               area: "中心部",     lat: 31.9166,   lng: 131.4233   },
+  { id: "s04", name: "宮崎駅前",             area: "中心部",     lat: 31.9157,   lng: 131.4320   },
+  { id: "s05", name: "橘橋",                 area: "中心部",     lat: 31.905563, lng: 131.420283 },
+  { id: "s07", name: "イオン宮崎方面",       area: "中心部",     lat: 31.9231,   lng: 131.4552   },
+  { id: "s20", name: "源藤",                 area: "中心部",     lat: 31.8874,   lng: 131.4121   },
+  { id: "s21", name: "江平",                 area: "中心部",     lat: 31.924248, lng: 131.425176 },
+  { id: "s22", name: "大工町",               area: "中心部",     lat: 31.918998, lng: 131.411550 },
+  { id: "s23", name: "宮崎県立病院方面",     area: "中心部",     lat: 31.916853, lng: 131.416846 },
+  { id: "s24", name: "瀬頭",                 area: "中心部",     lat: 31.907963, lng: 131.428663 },
+  { id: "s25", name: "昭和町",               area: "中心部",     lat: 31.907747, lng: 131.436247 },
+  { id: "s26", name: "一の宮",               area: "中心部",     lat: 31.907483, lng: 131.446893 },
+  // 橋
+  { id: "b01", name: "平和台大橋",           area: "中心部",     lat: 31.938097, lng: 131.407573 },
+  { id: "b02", name: "宮崎大橋",             area: "中心部",     lat: 31.920532, lng: 131.403445 },
+  { id: "b03", name: "高松橋",               area: "中心部",     lat: 31.914820, lng: 131.403551 },
+  { id: "b04", name: "天満橋",               area: "中心部",     lat: 31.907564, lng: 131.410734 },
+  { id: "b05", name: "大淀大橋",             area: "中心部",     lat: 31.903278, lng: 131.426922 },
+  { id: "b06", name: "小戸の橋",             area: "中心部",     lat: 31.900820, lng: 131.434001 },
+  { id: "b07", name: "赤江大橋",             area: "南部",       lat: 31.897992, lng: 131.438385 },
   // 北部・住吉
-  { id: "s11", name: "日向住吉駅入口交差点",  area: "北部・住吉", lat: 31.9909, lng: 131.4565 },
-  { id: "s12", name: "国道10号（延岡方面）",   area: "北部・住吉", lat: 31.9580, lng: 131.4350 },
-  { id: "s13", name: "下北方町交差点",        area: "北部・住吉", lat: 31.9440, lng: 131.4133 },
-  { id: "s14", name: "生目台周辺",            area: "北部・住吉", lat: 31.9038, lng: 131.3799 },
-  { id: "s15", name: "恒久交差点",            area: "北部・住吉", lat: 31.8912, lng: 131.4087 },
-  // 郊外
-  { id: "s16", name: "一ツ葉有料道路",        area: "郊外",       lat: 31.9213, lng: 131.4475 },
-  { id: "s17", name: "フレスタ恒久前",        area: "郊外",       lat: 31.8880, lng: 131.3920 },
-  { id: "s18", name: "宮崎IC周辺",            area: "郊外",       lat: 31.8700, lng: 131.4167 },
-  { id: "s19", name: "その他",                area: "その他",     lat: 31.9100, lng: 131.4200 },
+  { id: "s11", name: "日向住吉駅",           area: "北部・住吉", lat: 31.9909,   lng: 131.4565   },
+  { id: "s12", name: "宮崎北バイパス方面",   area: "北部・住吉", lat: 31.9580,   lng: 131.4200   },
+  { id: "s13", name: "下北方",               area: "北部・住吉", lat: 31.942731, lng: 131.429560 },
+  { id: "s27", name: "新名爪",               area: "北部・住吉", lat: 31.974046, lng: 131.439969 },
+  { id: "s28", name: "大島",                 area: "北部・住吉", lat: 31.942382, lng: 131.440915 },
+  { id: "s29", name: "池内南",               area: "北部・住吉", lat: 31.962470, lng: 131.415004 },
+  { id: "s30", name: "平和台大橋東",         area: "北部・住吉", lat: 31.938641, lng: 131.412954 },
+  { id: "s31", name: "矢ノ崎",               area: "北部・住吉", lat: 31.940705, lng: 131.421334 },
+  { id: "s32", name: "フェニックスガーデン方面", area: "北部・住吉", lat: 31.926719, lng: 131.436580 },
+  { id: "s33", name: "大塚（西の原）",       area: "北部・住吉", lat: 31.921930, lng: 131.393986 },
+  // 南部
+  { id: "s06", name: "宮崎南バイパス",       area: "南部",       lat: 31.8811,   lng: 131.4098   },
+  { id: "s14", name: "生目台",               area: "南部",       lat: 31.9038,   lng: 131.3799   },
+  { id: "s16", name: "一ツ葉有料道路",       area: "南部",       lat: 31.896225, lng: 131.445172 },
+  { id: "s34", name: "大坪町",               area: "南部",       lat: 31.895775, lng: 131.406799 },
+  { id: "s35", name: "田吉",                 area: "南部",       lat: 31.881564, lng: 131.427428 },
+  { id: "s36", name: "加納",                 area: "南部",       lat: 31.870612, lng: 131.392991 },
+  { id: "s18", name: "宮崎IC",               area: "南部",       lat: 31.8700,   lng: 131.4167   },
+  // 清武方面
+  { id: "s37", name: "ベアーズモール清武方面", area: "南部",     lat: 31.861801, lng: 131.387277 },
+  { id: "s38", name: "宮崎医大方面",         area: "南部",       lat: 31.840300, lng: 131.398410 },
+  // その他
+  { id: "s19", name: "その他",               area: "その他",     lat: 31.9400,   lng: 131.4800   },
 ];
 
 const AREA_COLORS = {
@@ -53,11 +76,11 @@ const FILTER_OPTIONS = [
 
 const n = Date.now();
 const SAMPLE_REPORTS = [
-  { id: 1, spotId: "s01", name: "青葉町交差点",          level: 3, postedAt: n - 6*60000,      votes: 9 },
-  { id: 2, spotId: "s07", name: "イオン宮崎・宮交シティ", level: 2, postedAt: n - 20*60000,     votes: 5 },
-  { id: 3, spotId: "s11", name: "日向住吉駅入口交差点",   level: 2, postedAt: n - 95*60000,     votes: 3 },
-  { id: 4, spotId: "s12", name: "国道10号（延岡方面）",   level: 1, postedAt: n - 4.5*3600000,  votes: 2 },
-  { id: 5, spotId: "s06", name: "宮崎南バイパス",         level: 1, postedAt: n - 8*3600000,    votes: 1 },
+  { id: 1, spotId: "s01", name: "青葉町",       level: 3, postedAt: n - 6*60000,     votes: 9 },
+  { id: 2, spotId: "s07", name: "イオン宮崎方面", level: 2, postedAt: n - 20*60000,   votes: 5 },
+  { id: 3, spotId: "s11", name: "日向住吉駅",   level: 2, postedAt: n - 95*60000,    votes: 3 },
+  { id: 4, spotId: "s12", name: "宮崎北バイパス方面", level: 1, postedAt: n - 4.5*3600000, votes: 2 },
+  { id: 5, spotId: "s06", name: "宮崎南バイパス", level: 1, postedAt: n - 8*3600000,  votes: 1 },
 ];
 
 function timeAgo(postedAt) {
@@ -245,6 +268,20 @@ export default function App() {
       </div>
       <div style={{ flex:1, position:"relative" }}>
         <LeafletMap reports={reports} onSelectSpot={setSpot} />
+        {/* その他ボタン（海側・右端に固定） */}
+        <div style={{ position:"absolute", right:10, top:"50%", transform:"translateY(-50%)", zIndex:1000 }}>
+          <button
+            onClick={() => setSpot(SPOTS.find(s => s.id === "s19"))}
+            style={{
+              background:"#1d6fb8", color:"#fff", border:"none", borderRadius:12,
+              padding:"12px 8px", fontSize:13, fontWeight:900, cursor:"pointer",
+              fontFamily:"inherit", writingMode:"vertical-rl",
+              boxShadow:"0 3px 12px rgba(29,111,184,0.45)", lineHeight:1.4,
+            }}
+          >
+            その他
+          </button>
+        </div>
       </div>
       <div style={{ background:"#fff", borderTop:"2px solid #e5e7eb", padding:"16px 18px", flexShrink:0, zIndex:1000 }}>
         {!spot ? (
