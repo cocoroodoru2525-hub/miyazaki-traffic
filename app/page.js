@@ -303,6 +303,10 @@ export default function App() {
         </button>
         {/* プライバシーポリシー */}
         <div style={{ marginTop: 16 }}>
+          <a href="/blog" style={{ fontSize: 12, color: "#9ca3af", textDecoration: "underline" }}>
+            📝 管理人より
+          </a>
+          <span style={{ margin: "0 8px", color: "#e5e7eb" }}>|</span>
           <a href="/privacy" style={{ fontSize: 12, color: "#9ca3af", textDecoration: "underline" }}>
             プライバシーポリシー
           </a>
