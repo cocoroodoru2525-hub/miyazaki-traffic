@@ -76,6 +76,7 @@ export default function PrivacyPage() {
         <Section title="9. お問い合わせ">
           本ポリシーに関するお問い合わせは以下までご連絡ください。
           <p style={{ marginTop: 8 }}>X: <a href="https://x.com/noriai2026" style={{ color: "#1d6fb8" }}>@noriai2026</a></p>
+          <p style={{ marginTop: 8 }}>メール: <a href="mailto:noriai2026@outlook.jp" style={{ color: "#1d6fb8" }}>noriai2026@outlook.jp</a></p>
         </Section>
 
         <div style={{ marginTop: 40, textAlign: "center" }}>
