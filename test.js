@@ -1,0 +1,1 @@
+const https = require('https');  -e "const https=require('https');const url='https://data.traffic.hereapi.com/v7/flow?in=bbox:131.38,31.85,131.48,31.95&locationReferencing=shape&apiKey=UUfXzPOIY_-azutfptja_MfWiS9NB_MP9bPgEeMU1cI';https.get(url,r=>{let d='';r.on('data',c=>d+=c);r.on('end',()=>console.log(d.substring(0,500)))})"  
