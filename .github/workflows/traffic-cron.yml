@@ -2,7 +2,7 @@ name: Traffic Data Collection
 
 on:
   schedule:
-    - cron: '*/15 22-11 * * *'
+    - cron: '*/15 22-23,0-11 * * *'
   workflow_dispatch:
 
 jobs:
@@ -15,7 +15,3 @@ jobs:
           node-version: '20'
       - run: npm install
       - run: node save-traffic.js
-        env:
-          SUPABASE_URL: https://asdadmmreyzhelxrares.supabase.co
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          HERE_API_KEY: ${{ secrets.HERE_API_KEY }}
