@@ -105,15 +105,17 @@ export default function DataPage() {
       setSpotRanking(sorted.map(s => ({ ...s, placeName: `${s.lat.toFixed(3)}, ${s.lng.toFixed(3)}` })));
       setLoading(false);
 
-      // 地名を非同期取得
-      sorted.forEach(async (spot, i) => {
+      // 地名を非同期取得（Nominatim制限対応：1秒間隔）
+      for (let i = 0; i < sorted.length; i++) {
+        const spot = sorted[i];
+        await new Promise(resolve => setTimeout(resolve, 1100 * i));
         const name = await getPlaceName(spot.lat, spot.lng);
         setSpotRanking(prev => {
           const next = [...prev];
           if (next[i]) next[i] = { ...next[i], placeName: name };
           return next;
         });
-      });
+      }
     }
     load();
   }, []);
