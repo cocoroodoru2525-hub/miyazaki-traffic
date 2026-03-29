@@ -23,23 +23,14 @@ function getLevelLabel(jamFactor) {
 async function getPlaceName(lat, lng) {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=ja`,
-      { headers: { "User-Agent": "noriai-miyazaki-traffic/1.0" } }
+      `https://mreversegeocoder.gsi.go.jp/reverse-geocoder/LonLatToAddress?lon=${lng}&lat=${lat}`
     );
     const json = await res.json();
-    const a = json.address || {};
-    // 町名・丁目・道路名などを優先して返す
-    return (
-      a.road ||
-      a.suburb ||
-      a.neighbourhood ||
-      a.quarter ||
-      a.village ||
-      a.town ||
-      a.city_district ||
-      a.county ||
-      `${lat.toFixed(3)}, ${lng.toFixed(3)}`
-    );
+    const r = json.results;
+    if (r && r.lv01Nm) {
+      return r.lv01Nm;
+    }
+    return `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
   } catch {
     return `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
   }
@@ -143,9 +134,9 @@ export default function Home() {
         <Link href="/" style={{ padding: "10px 20px", color: "white", textDecoration: "none", background: "#2563eb", fontWeight: "bold", fontSize: 13, borderBottom: "3px solid white" }}>
           📍 渋滞マップ
         </Link>
-        <Link href="/map" style={{ padding: "10px 20px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13 }}>
+        <a href="https://www.google.com/maps/@31.9077,131.4202,13z/data=!5m1!1e1" target="_blank" rel="noopener noreferrer" style={{ padding: "10px 20px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13 }}>
           🗺️ Googleマップ
-        </Link>
+        </a>
         <Link href="/data" style={{ padding: "10px 20px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13 }}>
           📊 1ヶ月データ
         </Link>
