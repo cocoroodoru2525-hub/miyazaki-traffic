@@ -26,10 +26,10 @@ export default function MapPage() {
         Googleマップのリアルタイム渋滞情報です。赤・橙色の道路が渋滞箇所です。
       </div>
 
-      {/* Google Maps iframe */}
+      {/* Google Maps iframe - 渋滞レイヤー付き */}
       <div style={{ flex: 1, position: "relative" }}>
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d52000!2d131.4202!3d31.9077!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sja!2sjp!4v1!5m2!1sja!2sjp&layer=traffic"
+          src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d26000!2d131.4202!3d31.9077!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sja!2sjp!4v1711699200000!5m2!1sja!2sjp&layer=traffic"
           width="100%"
           height="100%"
           style={{ border: 0, display: "block" }}

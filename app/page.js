@@ -20,6 +20,31 @@ function getLevelLabel(jamFactor) {
   return "🟢 スムーズ";
 }
 
+async function getPlaceName(lat, lng) {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=ja`,
+      { headers: { "User-Agent": "noriai-miyazaki-traffic/1.0" } }
+    );
+    const json = await res.json();
+    const a = json.address || {};
+    // 町名・丁目・道路名などを優先して返す
+    return (
+      a.road ||
+      a.suburb ||
+      a.neighbourhood ||
+      a.quarter ||
+      a.village ||
+      a.town ||
+      a.city_district ||
+      a.county ||
+      `${lat.toFixed(3)}, ${lng.toFixed(3)}`
+    );
+  } catch {
+    return `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
+  }
+}
+
 export default function Home() {
   const mapRef = useRef(null);
   const [updated, setUpdated] = useState("");
@@ -69,9 +94,18 @@ export default function Home() {
             );
         }
 
-        // ランキング（jam_factor降順TOP10）
+        // ランキング（jam_factor降順TOP10）＋地名取得
         const sorted = [...spots].sort((a, b) => b.jam_factor - a.jam_factor).slice(0, 10);
-        setRanking(sorted);
+        setRanking(sorted); // まず座標で表示
+        // 地名を非同期で取得して順次更新
+        sorted.forEach(async (row, i) => {
+          const name = await getPlaceName(row.lat, row.lng);
+          setRanking(prev => {
+            const next = [...prev];
+            if (next[i]) next[i] = { ...next[i], placeName: name };
+            return next;
+          });
+        });
 
         // 最新一覧（recorded_at降順）
         const recent = [...data].slice(0, 20);
@@ -153,7 +187,7 @@ export default function Home() {
                     </span>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 12, fontWeight: "bold", color: "#1e293b" }}>
-                        {row.lat.toFixed(3)}, {row.lng.toFixed(3)}
+                        {row.placeName || `${row.lat.toFixed(3)}, ${row.lng.toFixed(3)}`}
                       </div>
                       <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
                         速度: {row.speed.toFixed(1)} km/h
