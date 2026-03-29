@@ -107,9 +107,19 @@ export default function Home() {
           });
         });
 
-        // 最新一覧（recorded_at降順）
+        // 最新一覧（recorded_at降順）＋地名取得
         const recent = [...data].slice(0, 20);
-        setRecentList(recent);
+        setRecentList(recent.map(r => ({ ...r, placeName: `${r.lat.toFixed(3)}, ${r.lng.toFixed(3)}` })));
+
+        // 地名を非同期で取得して順次更新
+        recent.forEach(async (row, i) => {
+          const name = await getPlaceName(row.lat, row.lng);
+          setRecentList(prev => {
+            const next = [...prev];
+            if (next[i]) next[i] = { ...next[i], placeName: name };
+            return next;
+          });
+        });
 
         setUpdated(new Date().toLocaleTimeString("ja-JP"));
       }
@@ -228,8 +238,8 @@ export default function Home() {
                     <div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>
                       渋滞度: {row.jam_factor.toFixed(1)} ／ 速度: {row.speed.toFixed(1)} km/h
                     </div>
-                    <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 2 }}>
-                      {row.lat.toFixed(4)}, {row.lng.toFixed(4)}
+                    <div style={{ fontSize: 11, fontWeight: "bold", color: "#1e293b", marginTop: 2 }}>
+                      📍 {row.placeName || `${row.lat.toFixed(4)}, ${row.lng.toFixed(4)}`}
                     </div>
                   </div>
                 ))}

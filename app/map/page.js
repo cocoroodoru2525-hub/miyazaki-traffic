@@ -24,23 +24,36 @@ export default function MapPage() {
         </Link>
       </div>
 
-      {/* 説明 */}
-      <div style={{ padding: "8px 16px", background: "#f1f5f9", fontSize: 12, color: "#475569", flexShrink: 0, borderBottom: "1px solid #e2e8f0" }}>
-        Googleマップのリアルタイム渋滞情報です。赤・橙色の道路が渋滞箇所です。
-      </div>
-
-      {/* Google Maps iframe - 渋滞レイヤー付き */}
-      <div style={{ flex: 1, position: "relative" }}>
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d26000!2d131.4202!3d31.9077!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sja!2sjp!4v1711699200000!5m2!1sja!2sjp&layer=traffic"
-          width="100%"
-          height="100%"
-          style={{ border: 0, display: "block" }}
-          allowFullScreen
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          title="宮崎市 Googleマップ渋滞情報"
-        />
+      {/* メインコンテンツ */}
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "#f8fafc" }}>
+        <div style={{ textAlign: "center", padding: 40 }}>
+          <div style={{ fontSize: 60, marginBottom: 16 }}>🗺️</div>
+          <div style={{ fontSize: 20, fontWeight: "bold", color: "#1e293b", marginBottom: 8 }}>
+            Googleマップ 渋滞情報
+          </div>
+          <div style={{ fontSize: 14, color: "#64748b", marginBottom: 32, lineHeight: 1.7 }}>
+            宮崎市のリアルタイム渋滞情報を<br />Googleマップで確認できます。<br />
+            <span style={{ fontSize: 12, color: "#94a3b8" }}>※ 赤・橙色の道路が渋滞箇所です</span>
+          </div>
+          <a
+            href="https://www.google.com/maps/@31.9077,131.4202,13z/data=!5m1!1e1"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-block",
+              background: "#1d4ed8",
+              color: "white",
+              padding: "14px 36px",
+              borderRadius: 8,
+              textDecoration: "none",
+              fontWeight: "bold",
+              fontSize: 16,
+              boxShadow: "0 4px 12px rgba(29,78,216,0.3)",
+            }}
+          >
+            🗺️ Googleマップで開く
+          </a>
+        </div>
       </div>
     </div>
   );
