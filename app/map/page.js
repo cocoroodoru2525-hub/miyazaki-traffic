@@ -19,6 +19,9 @@ export default function MapPage() {
         <Link href="/map" style={{ padding: "10px 20px", color: "white", textDecoration: "none", background: "#2563eb", fontWeight: "bold", fontSize: 13, borderBottom: "3px solid white" }}>
           🗺️ Googleマップ
         </Link>
+        <Link href="/data" style={{ padding: "10px 20px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13 }}>
+          📊 1ヶ月データ
+        </Link>
       </div>
 
       {/* 説明 */}

@@ -136,6 +136,9 @@ export default function Home() {
         <Link href="/map" style={{ padding: "10px 20px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13 }}>
           🗺️ Googleマップ
         </Link>
+        <Link href="/data" style={{ padding: "10px 20px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 13 }}>
+          📊 1ヶ月データ
+        </Link>
       </div>
 
       {/* 凡例 */}
