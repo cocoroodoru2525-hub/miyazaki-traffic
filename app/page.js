@@ -44,13 +44,13 @@ export default function Home() {
           const color = getColor(row.jam_factor);
           L.circleMarker([row.lat, row.lng], {
             radius: 10,
-            color,
+            color: color,
             fillColor: color,
             fillOpacity: 0.8,
           })
             .addTo(map)
             .bindPopup(
-              `渋滞度: ${row.jam_factor.toFixed(1)}<br>速度: ${row.speed.toFixed(1)} km/h`
+              "渋滞度: " + row.jam_factor.toFixed(1) + "<br>速度: " + row.speed.toFixed(1) + " km/h"
             );
         }
         setUpdated(new Date().toLocaleTimeString("ja-JP"));
@@ -64,4 +64,16 @@ export default function Home() {
     <div style={{ fontFamily: "sans-serif" }}>
       <div style={{ background: "#1d4ed8", color: "white", padding: "12px 16px", display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontSize: 20 }}>🚦</span>
-        <span style={{ fontWeight: "bold", fontSize: 18 }}>宮崎市 渋滞マップ</
+        <span style={{ fontWeight: "bold", fontSize: 18 }}>宮崎市 渋滞マップ</span>
+        {updated && <span style={{ marginLeft: "auto", fontSize: 12, opacity: 0.8 }}>更新: {updated}</span>}
+      </div>
+      <div style={{ display: "flex", gap: 16, padding: "8px 16px", background: "#f1f5f9", fontSize: 13 }}>
+        <span>🟢 スムーズ</span>
+        <span>🟡 やや混雑</span>
+        <span>🔴 渋滞</span>
+      </div>
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+      <div ref={mapRef} style={{ height: "calc(100vh - 80px)", width: "100%" }} />
+    </div>
+  );
+}
