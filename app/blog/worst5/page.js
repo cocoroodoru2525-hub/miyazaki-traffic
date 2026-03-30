@@ -66,10 +66,3 @@ function Spot({ rank, name, area, desc, tip }) {
     </div>
   );
 }
-```
-
-貼り付けたら **Ctrl+S** → ターミナルで：
-```
-git add .
-git commit -m "ブログ記事修正"
-git push
