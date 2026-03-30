@@ -237,6 +237,13 @@ export default function DataPage() {
             </div>
           </>
         )}
+        {/* トップへ戻るボタン */}
+        <div style={{ textAlign: "center", padding: "24px 0 32px" }}>
+          <Link href="/" style={{ display: "inline-block", background: "#1d4ed8", color: "white", padding: "12px 32px", borderRadius: 8, textDecoration: "none", fontWeight: "bold", fontSize: 15, boxShadow: "0 4px 12px rgba(29,78,216,0.3)" }}>
+            ⬆️ トップへ戻る
+          </Link>
+        </div>
+
       </div>
     </div>
   );
