@@ -1,3 +1,20 @@
+export const metadata = {
+  title: "宮崎市の渋滞スポットワースト5！朝の通勤で特に注意すべき場所まとめ｜のりあい",
+  description: "宮崎市で毎日渋滞が発生する要注意スポットをまとめました。橘橋・宮崎駅前・南バイパスなど通勤前に必チェック！",
+  openGraph: {
+    title: "宮崎市の渋滞スポットワースト5！",
+    description: "宮崎市で毎日渋滞が発生する要注意スポットをまとめました。橘橋・宮崎駅前・南バイパスなど通勤前に必チェック！",
+    url: "https://noriai.jp/blog/worst5",
+    images: [{ url: "https://noriai.jp/ogp.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "宮崎市の渋滞スポットワースト5！",
+    description: "宮崎市で毎日渋滞が発生する要注意スポットをまとめました。橘橋・宮崎駅前・南バイパスなど通勤前に必チェック！",
+    images: ["https://noriai.jp/ogp.png"],
+  },
+};
+
 export default function Worst5Page() {
   return (
     <div style={{ fontFamily: "'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif", background: "#f1f5f9", minHeight: "100vh", paddingBottom: 48 }}>
