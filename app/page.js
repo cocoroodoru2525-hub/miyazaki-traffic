@@ -140,6 +140,9 @@ export default function Home() {
         <Link href="/data" style={{ flex: 1, padding: "8px 4px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 12, textAlign: "center" }}>
           📊 1ヶ月データ
         </Link>
+            <Link href="/blog" style={{ flex: 1, padding: "8px 4px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 12, textAlign: "center" }}>
+  📝 ブログ
+</Link>
       </div>
 
       {/* 凡例 */}
