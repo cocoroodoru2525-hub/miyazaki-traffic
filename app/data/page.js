@@ -143,7 +143,7 @@ export default function DataPage() {
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: "20px 16px" }}>
 
         <div style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>
-          📅 過去30日間の渋滞データ集計（※サービス開始直後はデータが少ない場合があります）
+          📅 過去30日間の渋滞データ集計
         </div>
 
         {loading ? (
@@ -152,24 +152,47 @@ export default function DataPage() {
           </div>
         ) : (
           <>
-            {/* サマリーカード */}
-            <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
-              <div style={cardStyle}>
-                <div style={{ fontSize: 11, color: "#64748b" }}>総データ件数</div>
-                <div style={{ fontSize: 24, fontWeight: "bold", color: "#1d4ed8", marginTop: 4 }}>{summary.total.toLocaleString()}<span style={{ fontSize: 12, fontWeight: "normal" }}> 件</span></div>
-              </div>
-              <div style={cardStyle}>
-                <div style={{ fontSize: 11, color: "#64748b" }}>平均渋滞度</div>
-                <div style={{ fontSize: 24, fontWeight: "bold", color: getColor(summary.avgJam), marginTop: 4 }}>{summary.avgJam.toFixed(1)}<span style={{ fontSize: 12, fontWeight: "normal" }}> / 10</span></div>
-              </div>
-              <div style={cardStyle}>
-                <div style={{ fontSize: 11, color: "#64748b" }}>最大渋滞度</div>
-                <div style={{ fontSize: 24, fontWeight: "bold", color: "#ef4444", marginTop: 4 }}>{summary.maxJam.toFixed(1)}<span style={{ fontSize: 12, fontWeight: "normal" }}> / 10</span></div>
-              </div>
-              <div style={cardStyle}>
-                <div style={{ fontSize: 11, color: "#64748b" }}>渋滞発生率</div>
-                <div style={{ fontSize: 24, fontWeight: "bold", color: "#f59e0b", marginTop: 4 }}>{summary.congestionRate.toFixed(1)}<span style={{ fontSize: 12, fontWeight: "normal" }}> %</span></div>
-              </div>
+            {/* スポットランキング */}
+            <div style={{ background: "#fff", borderRadius: 10, padding: 20, boxShadow: "0 1px 4px rgba(0,0,0,0.08)", marginBottom: 20 }}>
+              <div style={{ fontWeight: "bold", fontSize: 14, marginBottom: 16, color: "#1e293b" }}>🏆 渋滞多発スポット TOP10（過去30日）</div>
+              {spotRanking.map((spot, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < spotRanking.length - 1 ? "1px solid #f1f5f9" : "none" }}>
+                  <span style={{ fontSize: 18, width: 28, textAlign: "center" }}>
+                    {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`}
+                  </span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: "bold", color: "#1e293b" }}>{spot.placeName}</div>
+                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>データ件数: {spot.count}件</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 14, fontWeight: "bold", color: getColor(spot.jamSum / spot.count) }}>
+                      {(spot.jamSum / spot.count).toFixed(1)}
+                    </div>
+                    <div style={{ fontSize: 10, color: "#94a3b8" }}>平均渋滞度</div>
+                  </div>
+                </div>
+              ))}
+              {spotRanking.length === 0 && (
+                <div style={{ textAlign: "center", color: "#94a3b8", padding: 40, fontSize: 13 }}>データが蓄積されると表示されます</div>
+              )}
+            </div>
+
+            {/* 時間帯別グラフ */}
+            <div style={{ background: "#fff", borderRadius: 10, padding: 20, boxShadow: "0 1px 4px rgba(0,0,0,0.08)", marginBottom: 20 }}>
+              <div style={{ fontWeight: "bold", fontSize: 14, marginBottom: 16, color: "#1e293b" }}>🕐 時間帯別 平均渋滞度</div>
+              {hourlyData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={hourlyData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis dataKey="hour" tick={{ fontSize: 10 }} interval={1} />
+                    <YAxis domain={[0, 10]} tick={{ fontSize: 11 }} />
+                    <Tooltip />
+                    <Bar dataKey="平均渋滞度" fill="#f59e0b" radius={[3, 3, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div style={{ textAlign: "center", color: "#94a3b8", padding: 40, fontSize: 13 }}>データが蓄積されると表示されます</div>
+              )}
             </div>
 
             {/* 日別グラフ */}
@@ -193,47 +216,24 @@ export default function DataPage() {
               )}
             </div>
 
-            {/* 時間帯別グラフ */}
-            <div style={{ background: "#fff", borderRadius: 10, padding: 20, boxShadow: "0 1px 4px rgba(0,0,0,0.08)", marginBottom: 20 }}>
-              <div style={{ fontWeight: "bold", fontSize: 14, marginBottom: 16, color: "#1e293b" }}>🕐 時間帯別 平均渋滞度</div>
-              {hourlyData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={hourlyData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="hour" tick={{ fontSize: 10 }} interval={1} />
-                    <YAxis domain={[0, 10]} tick={{ fontSize: 11 }} />
-                    <Tooltip />
-                    <Bar dataKey="平均渋滞度" fill="#f59e0b" radius={[3, 3, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <div style={{ textAlign: "center", color: "#94a3b8", padding: 40, fontSize: 13 }}>データが蓄積されると表示されます</div>
-              )}
-            </div>
-
-            {/* スポットランキング */}
-            <div style={{ background: "#fff", borderRadius: 10, padding: 20, boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}>
-              <div style={{ fontWeight: "bold", fontSize: 14, marginBottom: 16, color: "#1e293b" }}>🏆 渋滞多発スポット TOP10（過去30日）</div>
-              {spotRanking.map((spot, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < spotRanking.length - 1 ? "1px solid #f1f5f9" : "none" }}>
-                  <span style={{ fontSize: 18, width: 28, textAlign: "center" }}>
-                    {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`}
-                  </span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13, fontWeight: "bold", color: "#1e293b" }}>{spot.placeName}</div>
-                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>データ件数: {spot.count}件</div>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: 14, fontWeight: "bold", color: getColor(spot.jamSum / spot.count) }}>
-                      {(spot.jamSum / spot.count).toFixed(1)}
-                    </div>
-                    <div style={{ fontSize: 10, color: "#94a3b8" }}>平均渋滞度</div>
-                  </div>
-                </div>
-              ))}
-              {spotRanking.length === 0 && (
-                <div style={{ textAlign: "center", color: "#94a3b8", padding: 40, fontSize: 13 }}>データが蓄積されると表示されます</div>
-              )}
+            {/* サマリーカード */}
+            <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+              <div style={cardStyle}>
+                <div style={{ fontSize: 11, color: "#64748b" }}>総データ件数</div>
+                <div style={{ fontSize: 24, fontWeight: "bold", color: "#1d4ed8", marginTop: 4 }}>{summary.total.toLocaleString()}<span style={{ fontSize: 12, fontWeight: "normal" }}> 件</span></div>
+              </div>
+              <div style={cardStyle}>
+                <div style={{ fontSize: 11, color: "#64748b" }}>平均渋滞度</div>
+                <div style={{ fontSize: 24, fontWeight: "bold", color: getColor(summary.avgJam), marginTop: 4 }}>{summary.avgJam.toFixed(1)}<span style={{ fontSize: 12, fontWeight: "normal" }}> / 10</span></div>
+              </div>
+              <div style={cardStyle}>
+                <div style={{ fontSize: 11, color: "#64748b" }}>最大渋滞度</div>
+                <div style={{ fontSize: 24, fontWeight: "bold", color: "#ef4444", marginTop: 4 }}>{summary.maxJam.toFixed(1)}<span style={{ fontSize: 12, fontWeight: "normal" }}> / 10</span></div>
+              </div>
+              <div style={cardStyle}>
+                <div style={{ fontSize: 11, color: "#64748b" }}>渋滞発生率</div>
+                <div style={{ fontSize: 24, fontWeight: "bold", color: "#f59e0b", marginTop: 4 }}>{summary.congestionRate.toFixed(1)}<span style={{ fontSize: 12, fontWeight: "normal" }}> %</span></div>
+              </div>
             </div>
           </>
         )}

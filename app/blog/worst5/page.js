@@ -59,17 +59,4 @@ function Spot({ rank, name, area, desc, tip }) {
           <p style={{ fontSize: 20, fontWeight: 900, color: "#111827" }}>{name}</p>
         </div>
       </div>
-      <p style={{ fontSize: 15, color: "#374151", lineHeight: 1.8, marginBottom: 10 }}>{desc}</p>
-      <div style={{ background: "#f8fafc", borderRadius: 10, padding: "8px 14px", fontSize: 13, color: "#1d6fb8", fontWeight: 700 }}>
-        💡 {tip}
-      </div>
-    </div>
-  );
-}
-```
-
-貼り付けたら **Ctrl+S** → ターミナルで：
-```
-git add .
-git commit -m "ブログ記事修正"
-git push
+      <p style={{ fontSize: 15, color: "#37415
