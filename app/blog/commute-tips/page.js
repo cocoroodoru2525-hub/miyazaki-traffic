@@ -1,3 +1,20 @@
+export const metadata = {
+  title: "宮崎市の通勤渋滞を避けるコツ5選！時間・ルート・アプリを賢く使おう｜のりあい",
+  description: "宮崎市の通勤渋滞を避けるコツをまとめました。時間帯・迂回ルート・一ツ葉有料道路の活用など、すぐに使えるテクニック5選！",
+  openGraph: {
+    title: "宮崎市の通勤渋滞を避けるコツ5選！",
+    description: "宮崎市の通勤渋滞を避けるコツをまとめました。時間帯・迂回ルート・一ツ葉有料道路の活用など、すぐに使えるテクニック5選！",
+    url: "https://noriai.jp/blog/commute-tips",
+    images: [{ url: "https://noriai.jp/ogp.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "宮崎市の通勤渋滞を避けるコツ5選！",
+    description: "宮崎市の通勤渋滞を避けるコツをまとめました。時間帯・迂回ルート・一ツ葉有料道路の活用など、すぐに使えるテクニック5選！",
+    images: ["https://noriai.jp/ogp.png"],
+  },
+};
+
 export default function CommuteTipsPage() {
   return (
     <div style={{ fontFamily: "'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif", background: "#f1f5f9", minHeight: "100vh", paddingBottom: 48 }}>
