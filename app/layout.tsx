@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Script from "next/script";
 
 export const metadata = {
   title: "のりあい｜宮崎渋滞情報",
@@ -6,11 +7,11 @@ export const metadata = {
   openGraph: {
     title: "のりあい｜宮崎渋滞情報",
     description: "宮崎のみんなで作るリアルタイム渋滞マップ。渋滞してるよ！をみんなに伝えよう。",
-    url: "https://noriaki.jp",
+    url: "https://noriai.jp",
     siteName: "のりあい",
     images: [
       {
-        url: "https://noriaki.jp/ogp.png",
+        url: "https://noriai.jp/ogp.png",
         width: 1200,
         height: 630,
         alt: "のりあい｜宮崎渋滞情報",
@@ -23,13 +24,27 @@ export const metadata = {
     card: "summary_large_image",
     title: "のりあい｜宮崎渋滞情報",
     description: "宮崎のみんなで作るリアルタイム渋滞マップ。渋滞してるよ！をみんなに伝えよう。",
-    images: ["https://noriaki.jp/ogp.png"],
+    images: ["https://noriai.jp/ogp.png"],
   },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ja">
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-7S8LD08RLH"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-7S8LD08RLH');
+          `}
+        </Script>
+      </head>
       <body style={{ margin: 0 }}>
         {children}
         <footer style={{
