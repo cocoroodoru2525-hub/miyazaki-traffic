@@ -126,7 +126,6 @@ function buildTweetText(summary) {
     status,
     `🔴 渋滞: ${summary.congested}箇所`,
     `🟡 やや混雑: ${summary.moderate}箇所`,
-    `🟢 スムーズ: ${summary.smooth}箇所`,
     '', '📍 リアルタイムマップはこちら', 'https://noriai.jp', '',
     '#宮崎市 #渋滞情報 #交通情報 #のりあい',
   ].join('\n');
