@@ -61,7 +61,6 @@ export default function Home() {
 
         if (!data) return;
 
-        // 最新スポットごとに1件
         const latest = {};
         for (const row of data) {
           const key = `${row.lat.toFixed(3)},${row.lng.toFixed(3)}`;
@@ -70,7 +69,6 @@ export default function Home() {
 
         const spots = Object.values(latest);
 
-        // 地図ピン
         for (const row of spots) {
           const color = getColor(row.jam_factor);
           L.circleMarker([row.lat, row.lng], {
@@ -85,10 +83,8 @@ export default function Home() {
             );
         }
 
-        // ランキング（jam_factor降順TOP10）＋地名取得
         const sorted = [...spots].sort((a, b) => b.jam_factor - a.jam_factor).slice(0, 10);
-        setRanking(sorted); // まず座標で表示
-        // 地名を非同期で取得して順次更新
+        setRanking(sorted);
         sorted.forEach(async (row, i) => {
           const name = await getPlaceName(row.lat, row.lng);
           setRanking(prev => {
@@ -98,11 +94,8 @@ export default function Home() {
           });
         });
 
-        // 最新一覧（recorded_at降順）＋地名取得
         const recent = [...data].slice(0, 20);
         setRecentList(recent.map(r => ({ ...r, placeName: `${r.lat.toFixed(3)}, ${r.lng.toFixed(3)}` })));
-
-        // 地名を非同期で取得して順次更新
         recent.forEach(async (row, i) => {
           const name = await getPlaceName(row.lat, row.lng);
           setRecentList(prev => {
@@ -121,15 +114,23 @@ export default function Home() {
 
   return (
     <div style={{ fontFamily: "sans-serif", display: "flex", flexDirection: "column", height: "100dvh", overflow: "hidden" }}>
+      <style>{`
+        .main-content { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+        .map-area { flex: 0 0 45vh; position: relative; }
+        .sidebar { flex: 1; background: #fff; border-top: 2px solid #e2e8f0; display: flex; flex-direction: column; overflow: hidden; }
+        @media (min-width: 768px) {
+          .main-content { flex-direction: row; }
+          .map-area { flex: 1; height: auto; }
+          .sidebar { flex: 0 0 380px; border-top: none; border-left: 2px solid #e2e8f0; }
+        }
+      `}</style>
 
-      {/* ヘッダー */}
       <div style={{ background: "#1d4ed8", color: "white", padding: "10px 16px", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
         <span style={{ fontSize: 18 }}>🚦</span>
         <span style={{ fontWeight: "bold", fontSize: 16 }}>宮崎市 渋滞マップ</span>
         {updated && <span style={{ marginLeft: "auto", fontSize: 11, opacity: 0.8 }}>更新: {updated}</span>}
       </div>
 
-      {/* ナビゲーション */}
       <div style={{ background: "#1e3a8a", display: "flex", flexShrink: 0 }}>
         <Link href="/" style={{ flex: 1, padding: "8px 4px", color: "white", textDecoration: "none", background: "#2563eb", fontWeight: "bold", fontSize: 12, borderBottom: "3px solid white", textAlign: "center" }}>
           📍 渋滞マップ
@@ -140,105 +141,101 @@ export default function Home() {
         <Link href="/data" style={{ flex: 1, padding: "8px 4px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 12, textAlign: "center" }}>
           📊 1ヶ月データ
         </Link>
-            <Link href="/blog" style={{ flex: 1, padding: "8px 4px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 12, textAlign: "center" }}>
-  📝 ブログ
-</Link>
+        <Link href="/blog" style={{ flex: 1, padding: "8px 4px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 12, textAlign: "center" }}>
+          📝 ブログ
+        </Link>
       </div>
 
-      {/* 凡例 */}
       <div style={{ display: "flex", gap: 12, padding: "6px 16px", background: "#f1f5f9", fontSize: 12, flexShrink: 0 }}>
         <span>🟢 スムーズ</span>
         <span>🟡 やや混雑</span>
         <span>🔴 渋滞</span>
       </div>
 
-      {/* 地図（上半分） */}
-      <div style={{ flex: "0 0 45vh", position: "relative" }}>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-        <div ref={mapRef} style={{ height: "100%", width: "100%" }} />
-      </div>
-
-      {/* フッターパネル（下半分） */}
-      <div style={{ flex: 1, background: "#fff", borderTop: "2px solid #e2e8f0", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-
-        {/* タブ */}
-        <div style={{ display: "flex", borderBottom: "1px solid #e2e8f0", flexShrink: 0 }}>
-          <button
-            onClick={() => setTab("ranking")}
-            style={{ flex: 1, padding: "10px 0", fontSize: 13, fontWeight: tab === "ranking" ? "bold" : "normal", background: tab === "ranking" ? "#eff6ff" : "#fff", border: "none", borderBottom: tab === "ranking" ? "2px solid #1d4ed8" : "none", cursor: "pointer", color: tab === "ranking" ? "#1d4ed8" : "#64748b" }}
-          >
-            🏆 渋滞ランキング
-          </button>
-          <button
-            onClick={() => setTab("list")}
-            style={{ flex: 1, padding: "10px 0", fontSize: 13, fontWeight: tab === "list" ? "bold" : "normal", background: tab === "list" ? "#eff6ff" : "#fff", border: "none", borderBottom: tab === "list" ? "2px solid #1d4ed8" : "none", cursor: "pointer", color: tab === "list" ? "#1d4ed8" : "#64748b" }}
-          >
-            📋 最新データ
-          </button>
+      <div className="main-content">
+        <div className="map-area">
+          <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+          <div ref={mapRef} style={{ height: "100%", width: "100%" }} />
         </div>
 
-        {/* タブコンテンツ */}
-        <div style={{ flex: 1, overflowY: "auto" }}>
-          {tab === "ranking" && (
-            <div>
-              <div style={{ padding: "8px 16px", background: "#eff6ff", fontSize: 11, color: "#64748b", borderBottom: "1px solid #e2e8f0" }}>
-                渋滞度が高い場所TOP10
-              </div>
-              {ranking.map((row, i) => (
-                <div key={i} style={{ padding: "10px 16px", borderBottom: "1px solid #f1f5f9", display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontSize: 16, fontWeight: "bold", color: i < 3 ? "#f59e0b" : "#94a3b8", width: 24, textAlign: "center" }}>
-                    {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`}
-                  </span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13, fontWeight: "bold", color: "#1e293b" }}>
-                      {row.placeName || `${row.lat.toFixed(3)}, ${row.lng.toFixed(3)}`}
-                    </div>
-                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
-                      速度: {row.speed.toFixed(1)} km/h
-                    </div>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: 14, fontWeight: "bold", color: getColor(row.jam_factor) }}>
-                      {row.jam_factor.toFixed(1)}
-                    </div>
-                    <div style={{ fontSize: 10, color: "#94a3b8" }}>渋滞度</div>
-                  </div>
-                </div>
-              ))}
-              {ranking.length === 0 && (
-                <div style={{ padding: 20, textAlign: "center", color: "#94a3b8", fontSize: 13 }}>データ読み込み中...</div>
-              )}
-            </div>
-          )}
+        <div className="sidebar">
+          <div style={{ display: "flex", borderBottom: "1px solid #e2e8f0", flexShrink: 0 }}>
+            <button
+              onClick={() => setTab("ranking")}
+              style={{ flex: 1, padding: "10px 0", fontSize: 13, fontWeight: tab === "ranking" ? "bold" : "normal", background: tab === "ranking" ? "#eff6ff" : "#fff", border: "none", borderBottom: tab === "ranking" ? "2px solid #1d4ed8" : "none", cursor: "pointer", color: tab === "ranking" ? "#1d4ed8" : "#64748b" }}
+            >
+              🏆 渋滞ランキング
+            </button>
+            <button
+              onClick={() => setTab("list")}
+              style={{ flex: 1, padding: "10px 0", fontSize: 13, fontWeight: tab === "list" ? "bold" : "normal", background: tab === "list" ? "#eff6ff" : "#fff", border: "none", borderBottom: tab === "list" ? "2px solid #1d4ed8" : "none", cursor: "pointer", color: tab === "list" ? "#1d4ed8" : "#64748b" }}
+            >
+              📋 最新データ
+            </button>
+          </div>
 
-          {tab === "list" && (
-            <div>
-              <div style={{ padding: "8px 16px", background: "#eff6ff", fontSize: 11, color: "#64748b", borderBottom: "1px solid #e2e8f0" }}>
-                最新20件
-              </div>
-              {recentList.map((row, i) => (
-                <div key={i} style={{ padding: "10px 16px", borderBottom: "1px solid #f1f5f9" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 12, fontWeight: "bold", color: getColor(row.jam_factor) }}>
-                      {getLevelLabel(row.jam_factor)}
-                    </span>
-                    <span style={{ fontSize: 10, color: "#94a3b8" }}>
-                      {new Date(row.recorded_at).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>
-                    渋滞度: {row.jam_factor.toFixed(1)} ／ 速度: {row.speed.toFixed(1)} km/h
-                  </div>
-                  <div style={{ fontSize: 12, fontWeight: "bold", color: "#1e293b", marginTop: 2 }}>
-                    📍 {row.placeName || `${row.lat.toFixed(4)}, ${row.lng.toFixed(4)}`}
-                  </div>
+          <div style={{ flex: 1, overflowY: "auto" }}>
+            {tab === "ranking" && (
+              <div>
+                <div style={{ padding: "8px 16px", background: "#eff6ff", fontSize: 11, color: "#64748b", borderBottom: "1px solid #e2e8f0" }}>
+                  渋滞度が高い場所TOP10
                 </div>
-              ))}
-              {recentList.length === 0 && (
-                <div style={{ padding: 20, textAlign: "center", color: "#94a3b8", fontSize: 13 }}>データ読み込み中...</div>
-              )}
-            </div>
-          )}
+                {ranking.map((row, i) => (
+                  <div key={i} style={{ padding: "10px 16px", borderBottom: "1px solid #f1f5f9", display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 16, fontWeight: "bold", color: i < 3 ? "#f59e0b" : "#94a3b8", width: 24, textAlign: "center" }}>
+                      {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`}
+                    </span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 13, fontWeight: "bold", color: "#1e293b" }}>
+                        {row.placeName || `${row.lat.toFixed(3)}, ${row.lng.toFixed(3)}`}
+                      </div>
+                      <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
+                        速度: {row.speed.toFixed(1)} km/h
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 14, fontWeight: "bold", color: getColor(row.jam_factor) }}>
+                        {row.jam_factor.toFixed(1)}
+                      </div>
+                      <div style={{ fontSize: 10, color: "#94a3b8" }}>渋滞度</div>
+                    </div>
+                  </div>
+                ))}
+                {ranking.length === 0 && (
+                  <div style={{ padding: 20, textAlign: "center", color: "#94a3b8", fontSize: 13 }}>データ読み込み中...</div>
+                )}
+              </div>
+            )}
+
+            {tab === "list" && (
+              <div>
+                <div style={{ padding: "8px 16px", background: "#eff6ff", fontSize: 11, color: "#64748b", borderBottom: "1px solid #e2e8f0" }}>
+                  最新20件
+                </div>
+                {recentList.map((row, i) => (
+                  <div key={i} style={{ padding: "10px 16px", borderBottom: "1px solid #f1f5f9" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: 12, fontWeight: "bold", color: getColor(row.jam_factor) }}>
+                        {getLevelLabel(row.jam_factor)}
+                      </span>
+                      <span style={{ fontSize: 10, color: "#94a3b8" }}>
+                        {new Date(row.recorded_at).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 3 }}>
+                      渋滞度: {row.jam_factor.toFixed(1)} ／ 速度: {row.speed.toFixed(1)} km/h
+                    </div>
+                    <div style={{ fontSize: 12, fontWeight: "bold", color: "#1e293b", marginTop: 2 }}>
+                      📍 {row.placeName || `${row.lat.toFixed(4)}, ${row.lng.toFixed(4)}`}
+                    </div>
+                  </div>
+                ))}
+                {recentList.length === 0 && (
+                  <div style={{ padding: 20, textAlign: "center", color: "#94a3b8", fontSize: 13 }}>データ読み込み中...</div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
