@@ -135,7 +135,8 @@ export default function Home() {
         <Link href="/" style={{ flex: 1, padding: "8px 4px", color: "white", textDecoration: "none", background: "#2563eb", fontWeight: "bold", fontSize: 12, borderBottom: "3px solid white", textAlign: "center" }}>
           📍 渋滞マップ
         </Link>
-        <a href="https://www.google.com/maps/@31.9077,131.4202,13z/data=!5m1!1e1" target="_blank" rel="noopener noreferrer" style={{ flex: 1, padding: "8px 4px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 12, textAlign: "center" }}>
+        <a href="https://www.google.com/maps/@31.9077,131.4202,10257m/data=!3m1!1e3!5m1!1e1
+" target="_blank" rel="noopener noreferrer" style={{ flex: 1, padding: "8px 4px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 12, textAlign: "center" }}>
           🗺️ Googleマップ
         </a>
         <Link href="/data" style={{ flex: 1, padding: "8px 4px", color: "rgba(255,255,255,0.75)", textDecoration: "none", fontSize: 12, textAlign: "center" }}>
