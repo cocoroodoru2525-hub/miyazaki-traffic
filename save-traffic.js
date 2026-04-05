@@ -19,7 +19,13 @@ async function fetchAndSave() {
       const results = json.results || [];
       for (const r of results) {
         const flow = r.currentFlow;
-        const point = r.location.shape.links[0].points[0];
+                const allPoints = [];
+        for (const link of r.location.shape.links) {
+          for (const p of link.points) {
+            allPoints.push(p);
+          }
+        }
+        const point = allPoints[Math.floor(allPoints.length / 2)];
         await supabase.from('traffic_log').insert({
           jam_factor: flow.jamFactor,
           speed: flow.speed,
